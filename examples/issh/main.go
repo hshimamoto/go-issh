@@ -30,6 +30,8 @@ func main() {
 	}
 	defer cli.Close()
 
+	cli.StartKeepalive(30)
+
 	session, err := cli.NewSession()
 	if err != nil {
 		log.Printf("NewSession: %v", err)
