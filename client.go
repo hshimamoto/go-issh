@@ -31,9 +31,13 @@ func Dial(addr string, config *Config) (*Client, error) {
 
 // start keepalive
 func (cli *Client) StartKeepalive(sec int) {
+	if sec <= 0 {
+		return
+	}
 	if cli.keepalivesec > 0 {
 		return
 	}
+	cli.keepalivesec = sec
 	go func() {
 		for cli.keepalivesec > 0 {
 			_, _, err := cli.SendRequest("keepalive@golang.org", true, nil)
