@@ -1,4 +1,4 @@
-// MIT License Copyright (C) 2022 Hiroshi Shimamoto
+// MIT License Copyright (C) 2022, 2024 Hiroshi Shimamoto
 package issh
 
 import (
@@ -12,11 +12,7 @@ type Config struct {
 }
 
 // create inscure config with user and key
-func NewConfig(user, keyfile string) (*Config, error) {
-	key, err := os.ReadFile(keyfile)
-	if err != nil {
-		return nil, err
-	}
+func NewConfigBytes(user string, key []byte) (*Config, error) {
 	signer, err := ssh.ParsePrivateKey(key)
 	if err != nil {
 		return nil, err
@@ -29,4 +25,12 @@ func NewConfig(user, keyfile string) (*Config, error) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 	return &Config{config: config}, nil
+}
+
+func NewConfig(user, keyfile string) (*Config, error) {
+	key, err := os.ReadFile(keyfile)
+	if err != nil {
+		return nil, err
+	}
+	return NewConfigBytes(user, key)
 }
